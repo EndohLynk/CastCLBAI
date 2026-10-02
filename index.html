@@ -853,12 +853,38 @@
       { id: crypto.randomUUID(), name: 'Nguyễn Văn A', username: 'student01', password: '123456', role: 'user' }
     ];
 
-    const defaultBooks = [
-      { id: crypto.randomUUID(), title: 'Toán 7', author: 'Bộ Giáo dục', category: 'Toán học', status: 'available', createdAt: new Date().toISOString() },
-      { id: crypto.randomUUID(), title: 'Ngữ văn 7', author: 'Bộ Giáo dục', category: 'Ngữ văn', status: 'available', createdAt: new Date().toISOString() },
-      { id: crypto.randomUUID(), title: 'Vật lý 8', author: 'Bộ Giáo dục', category: 'Khoa học', status: 'available', createdAt: new Date().toISOString() }
-    ];
+    function buildBookLibrary(count = 1000) {
+      const categories = [
+        'Toán học', 'Ngữ văn', 'Vật lý', 'Hóa học', 'Sinh học', 'Lịch sử', 'Địa lý',
+        'Tiếng Anh', 'Tin học', 'Âm nhạc', 'Mỹ thuật', 'Giáo dục công dân', 'Kỹ thuật',
+        'Khoa học tự nhiên', 'Khoa học xã hội', 'Tâm lý học', 'Tài chính', 'Marketing',
+        'Nông nghiệp', 'Y tế', 'Thể thao', 'Triết học', 'Văn học', 'Kinh doanh'
+      ];
+      const authors = [
+        'Bộ Giáo dục', 'Nguyễn Văn An', 'Trần Thị Bình', 'Lê Minh Cường', 'Phạm Thu Duyên',
+        'Hoàng Quốc Hải', 'Vũ Thị Lan', 'Đặng Gia Mạnh', 'Ngô Huyền My', 'Tô Quốc Nam',
+        'Mai Anh Phương', 'Lý Quốc Sơn', 'Đỗ Thị Thanh', 'Cao Hoài Thương', 'Bùi Anh Tuấn',
+        'Hồ Văn Uý', 'Phan Kim Vân', 'Trương Xuân Yến', 'Đinh Nhật Tân', 'Nguyễn Hồng Yến'
+      ];
 
+      const books = [];
+      for (let i = 0; i < count; i += 1) {
+        const category = categories[i % categories.length];
+        const author = authors[i % authors.length];
+        const titleNumber = String(i + 1).padStart(3, '0');
+        books.push({
+          id: crypto.randomUUID(),
+          title: `${category} ${titleNumber}`,
+          author,
+          category,
+          status: i % 15 === 0 ? 'borrowed' : 'available',
+          createdAt: new Date(Date.now() - i * 86400000).toISOString()
+        });
+      }
+      return books;
+    }
+
+    const defaultBooks = buildBookLibrary(1000);
     const defaultRequests = [];
 
     function safeParse(key, fallback) {
@@ -870,6 +896,28 @@
       }
     }
 
+    function ensureLibraryHasEnoughBooks() {
+      const existingBooks = getBooks();
+      if (existingBooks.length >= 1000) {
+        return;
+      }
+      const seedBooks = buildBookLibrary(1000);
+      const safeExisting = existingBooks.filter(Boolean);
+      const seenTitles = new Set(safeExisting.map((book) => String(book.title).trim().toLowerCase()));
+      const mergedBooks = [...safeExisting];
+
+      for (const book of seedBooks) {
+        if (mergedBooks.length >= 1000) break;
+        const key = String(book.title).trim().toLowerCase();
+        if (!seenTitles.has(key)) {
+          mergedBooks.push(book);
+          seenTitles.add(key);
+        }
+      }
+
+      localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(mergedBooks));
+    }
+
     function boot() {
       if (!localStorage.getItem(STORAGE_KEYS.users)) {
         localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(defaultUsers));
@@ -877,6 +925,7 @@
       if (!localStorage.getItem(STORAGE_KEYS.books)) {
         localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(defaultBooks));
       }
+      ensureLibraryHasEnoughBooks();
       if (!localStorage.getItem(STORAGE_KEYS.requests)) {
         localStorage.setItem(STORAGE_KEYS.requests, JSON.stringify(defaultRequests));
       }
