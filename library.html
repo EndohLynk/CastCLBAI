@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thư viện sách | Đủ sách để học</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="app-page">
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a href="index.html" class="brand" aria-label="Trang chủ">
+          <span class="brand-mark">📚</span>
+          <span>Đủ sách để học</span>
+        </a>
+
+        <nav class="side-nav" aria-label="Điều hướng">
+          <a class="nav-link active" href="library.html">Bảng điều khiển</a>
+          <a class="nav-link" href="index.html">Trang chủ</a>
+          <a class="nav-link" href="#managerPanel">Quản lý</a>
+          <a class="nav-link" href="#userPanel">Người dùng</a>
+        </nav>
+      </aside>
+
+      <main class="content-panel">
+        <div id="loginState" class="login-bar"></div>
+        <div id="authAlert" class="alert" role="alert"></div>
+
+        <div id="guestState" class="auth-grid">
+          <section class="auth-card">
+            <div class="panel-heading">
+              <span class="eyebrow">Đăng nhập</span>
+              <h2>Chào mừng trở lại</h2>
+            </div>
+            <form id="loginForm" class="form-grid" novalidate>
+              <label class="field">
+                Tên đăng nhập
+                <input type="text" name="username" placeholder="Nhập username" />
+              </label>
+              <label class="field">
+                Mật khẩu
+                <input type="password" name="password" placeholder="Nhập mật khẩu" />
+              </label>
+              <button type="submit" class="btn btn-primary">Đăng nhập</button>
+            </form>
+          </section>
+
+          <section class="auth-card">
+            <div class="panel-heading">
+              <span class="eyebrow">Đăng ký</span>
+              <h2>Tạo tài khoản mới</h2>
+            </div>
+            <form id="registerForm" class="form-grid" novalidate>
+              <label class="field">
+                Họ và tên
+                <input type="text" name="name" placeholder="Ví dụ: Nguyễn Văn A" />
+              </label>
+              <label class="field">
+                Tên đăng nhập
+                <input type="text" name="username" placeholder="Ví dụ: student01" />
+              </label>
+              <label class="field">
+                Mật khẩu
+                <input type="password" name="password" placeholder="Nhập mật khẩu" />
+              </label>
+              <label class="field">
+                Vai trò
+                <select name="role">
+                  <option value="user">Người dùng</option>
+                  <option value="manager">Quản lý</option>
+                </select>
+              </label>
+              <button type="submit" class="btn btn-primary">Đăng ký</button>
+            </form>
+          </section>
+        </div>
+
+        <div id="dashboard" class="dashboard-shell" style="display:none;">
+          <div id="managerPanel" class="panel-card" style="display:none;">
+            <div class="panel-heading">
+              <span class="eyebrow">Quản lý</span>
+              <h3>Kho sách và yêu cầu</h3>
+            </div>
+
+            <form id="bookForm" class="form-grid" novalidate>
+              <div class="field-row">
+                <label class="field">
+                  Tên sách
+                  <input type="text" name="title" placeholder="Ví dụ: Toán 7" />
+                </label>
+                <label class="field">
+                  Tác giả
+                  <input type="text" name="author" placeholder="Ví dụ: Bộ Giáo dục" />
+                </label>
+              </div>
+              <div class="field-row">
+                <label class="field">
+                  Thể loại
+                  <input type="text" name="category" placeholder="Ví dụ: Toán học" />
+                </label>
+                <label class="field">
+                  Trạng thái
+                  <select name="status">
+                    <option value="available">Sẵn có</option>
+                    <option value="borrowed">Đang cho mượn</option>
+                  </select>
+                </label>
+              </div>
+              <button class="btn btn-primary" type="submit">Đăng sách cho mượn</button>
+            </form>
+
+            <div class="app-stats stats-grid">
+              <div class="stat-card app-stat">
+                <span class="stat-label">Tổng sách</span>
+                <span class="stat-value" id="statTotal">0</span>
+              </div>
+              <div class="stat-card app-stat">
+                <span class="stat-label">Sẵn có</span>
+                <span class="stat-value" id="statAvailable">0</span>
+              </div>
+              <div class="stat-card app-stat">
+                <span class="stat-label">Đang mượn</span>
+                <span class="stat-value" id="statBorrowed">0</span>
+              </div>
+              <div class="stat-card app-stat">
+                <span class="stat-label">Chờ duyệt</span>
+                <span class="stat-value" id="statPending">0</span>
+              </div>
+            </div>
+
+            <div class="analytics-grid">
+              <div class="panel-mini chart-panel">
+                <div class="panel-mini-header">
+                  <span class="eyebrow">Báo cáo</span>
+                  <h4>Phân bổ theo danh mục</h4>
+                </div>
+                <div id="categoryChart" class="bar-chart"></div>
+              </div>
+
+              <div class="panel-mini insights-panel">
+                <div class="panel-mini-header">
+                  <span class="eyebrow">Tổng quan</span>
+                  <h4>Điểm nổi bật</h4>
+                </div>
+                <ul id="adminInsights" class="insight-list"></ul>
+              </div>
+            </div>
+
+            <div class="panel-mini">
+              <div class="panel-mini-header">
+                <span class="eyebrow">Thống kê nhanh</span>
+                <h4>Danh mục phổ biến</h4>
+              </div>
+              <div id="categoryBreakdown" class="mini-table"></div>
+            </div>
+
+            <div class="search-box">
+              <label class="field">
+                Tìm kiếm sách
+                <input id="bookSearch" type="text" placeholder="Nhập tên hoặc thể loại sách..." />
+              </label>
+            </div>
+            <div id="bookCatalog" class="catalog"></div>
+
+            <div class="section-block">
+              <h3>Yêu cầu mượn</h3>
+              <div id="requestListManager" class="request-list"></div>
+            </div>
+          </div>
+
+          <div id="userPanel" class="panel-card" style="display:none;">
+            <div class="panel-heading">
+              <span class="eyebrow">Người dùng</span>
+              <h3>Yêu cầu mượn sách</h3>
+            </div>
+
+            <form id="requestForm" class="form-grid" novalidate>
+              <label class="field">
+                Chọn sách
+                <select name="bookId" id="bookSelect"></select>
+              </label>
+              <div class="field-row">
+                <label class="field">
+                  Ngày mượn
+                  <input type="date" name="startDate" />
+                </label>
+                <label class="field">
+                  Ngày trả dự kiến
+                  <input type="date" name="endDate" />
+                </label>
+              </div>
+              <label class="field">
+                Ghi chú
+                <textarea name="note" placeholder="Mô tả mục đích mượn sách..."></textarea>
+              </label>
+              <button type="submit" class="btn btn-primary">Gửi yêu cầu mượn</button>
+            </form>
+
+            <div class="section-block">
+              <h3>Yêu cầu của tôi</h3>
+              <div id="requestListUser" class="request-list"></div>
+            </div>
+
+            <div class="section-block">
+              <h3>Lịch sử mượn</h3>
+              <div id="historyListUser" class="request-list"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="app-backend.js"></script>
+  </body>
+</html>
