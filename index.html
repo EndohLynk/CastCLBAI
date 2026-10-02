@@ -22,6 +22,10 @@
       --serif: "Playfair Display", Georgia, serif;
       --sans: "DM Sans", "Segoe UI", sans-serif;
       --content: 1160px;
+      --success: #1d7a4f;
+      --warning: #c47a2a;
+      --danger: #b24435;
+      --shadow: 0 12px 28px rgba(14, 31, 28, 0.12);
     }
 
     * { box-sizing: border-box; }
@@ -35,7 +39,7 @@
       line-height: 1.6;
     }
     a { color: inherit; }
-    button { font: inherit; }
+    button, input, select, textarea { font: inherit; }
     .wrap { width: min(var(--content), calc(100% - 64px)); margin-inline: auto; }
     .eyebrow {
       display: inline-flex;
@@ -138,11 +142,15 @@
       font-weight: 700;
       text-decoration: none;
       transition: transform .18s ease, background .18s ease;
+      cursor: pointer;
     }
     .button:hover { transform: translateY(-2px); }
     .button-primary { color: var(--ink); background: var(--lime); }
     .button-quiet { color: var(--white); border-color: rgb(255 255 255 / 54%); background: transparent; }
     .button-quiet:hover { color: var(--ink); background: var(--white); }
+    .button-secondary { background: var(--ink); color: var(--white); }
+    .button-danger { background: var(--coral); color: var(--white); }
+    .button-success { background: var(--success); color: var(--white); }
     .arrow { font-size: 18px; line-height: 1; }
     .hero-note {
       position: absolute;
@@ -216,6 +224,205 @@
     .print-button { flex: 0 0 auto; color: var(--white); background: var(--ink); cursor: pointer; }
     .print-button:hover { background: var(--coral); }
 
+    .demo-panel {
+      position: relative;
+      padding: 82px 0 80px;
+      background: linear-gradient(180deg, rgba(24, 59, 53, 0.02), rgba(24, 59, 53, 0.04));
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .demo-card {
+      display: grid;
+      grid-template-columns: 1.1fr 1.45fr;
+      gap: 26px;
+      align-items: start;
+    }
+
+    .auth-box, .book-box, .requests-box {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .auth-box h3, .book-box h3, .requests-box h3 {
+      margin: 0 0 18px;
+      font-size: 28px;
+      line-height: 1.2;
+      font-family: var(--serif);
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .tab-button {
+      flex: 1;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      background: #f1f4ed;
+      color: var(--ink);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab-button.active {
+      background: var(--ink);
+      color: var(--white);
+      border-color: var(--ink);
+    }
+
+    .auth-form, .book-form, .request-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f8faf6;
+      color: var(--ink);
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .login-state {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--ink-soft);
+      font-size: 14px;
+    }
+
+    .user-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #edf4d8;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 14px;
+    }
+
+    .dashboard {
+      display: none;
+      gap: 24px;
+      margin-top: 26px;
+    }
+
+    .dashboard.active {
+      display: grid;
+    }
+
+    .book-list, .request-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .book-item, .request-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f9faf7;
+    }
+
+    .book-meta, .request-meta {
+      display: grid;
+      gap: 4px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .badge.available { background: rgba(29, 122, 79, 0.12); color: var(--success); }
+    .badge.borrowed { background: rgba(196, 122, 42, 0.14); color: var(--warning); }
+    .badge.pending { background: rgba(221, 97, 72, 0.12); color: var(--danger); }
+    .badge.approved { background: rgba(29, 122, 79, 0.12); color: var(--success); }
+
+    .small-button {
+      min-height: 36px;
+      padding: 0 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .status-text {
+      margin: 0;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+
+    .alert {
+      display: none;
+      padding: 10px 12px;
+      margin-top: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      background: rgba(29, 122, 79, 0.12);
+      border: 1px solid rgba(29, 122, 79, 0.2);
+      color: var(--success);
+    }
+
+    .alert.show { display: block; }
+    .alert.error {
+      background: rgba(178, 68, 53, 0.1);
+      border-color: rgba(178, 68, 53, 0.2);
+      color: var(--danger);
+    }
+
     footer { padding: 25px 0; color: rgb(255 254 250 / 74%); background: #102e29; font-size: 12px; }
     .footer-inner { display: flex; justify-content: space-between; gap: 20px; }
     footer strong { color: var(--white); }
@@ -237,7 +444,7 @@
       .hero-copy { max-width: 460px; font-size: 16px; }
       .hero-note { right: 20px; bottom: 16px; font-size: 10px; }
       .intro { padding: 48px 0 52px; }
-      .intro-grid, .field-grid, .rights-grid { grid-template-columns: 1fr; gap: 25px; }
+      .intro-grid, .field-grid, .rights-grid, .demo-card { grid-template-columns: 1fr; gap: 25px; }
       .intro h2, .section-heading h2 { font-size: 39px; }
       .intro-copy { font-size: 15px; }
       .solution, .start { padding: 60px 0; }
@@ -260,6 +467,7 @@
       .check:nth-child(3) { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
       .check:nth-child(4) { border-top: 1px solid var(--line); }
       .print-row { align-items: flex-start; flex-direction: column; }
+      .field-row { grid-template-columns: 1fr; }
       .footer-inner { flex-direction: column; gap: 5px; }
     }
     @media (max-width: 390px) {
@@ -273,7 +481,7 @@
     @media print {
       :root { --paper: #fff; }
       body { background: #fff; font-size: 11pt; }
-      .topbar, .hero::before, .hero-note, .hero-actions, .print-row, footer { display: none !important; }
+      .topbar, .hero::before, .hero-note, .hero-actions, .print-row, footer, .demo-panel { display: none !important; }
       .hero { min-height: 0; height: auto; padding: 35px 0; color: var(--ink); background: #fff; }
       .hero-content { padding: 0; }
       .hero .eyebrow { color: var(--coral); }
@@ -300,6 +508,7 @@
       <div class="nav-links">
         <a href="#giai-phap">Giải pháp</a>
         <a href="#ban-quyen">Bản quyền</a>
+        <a href="#so-muon-sach">Sổ mượn sách</a>
         <button class="nav-print" type="button" data-print>In đề xuất</button>
       </div>
     </nav>
@@ -313,7 +522,7 @@
         <p class="hero-copy">Một mạng lưới mượn sách giấy hợp pháp, kết hợp học liệu mới do giáo viên biên soạn, giúp mỗi học sinh theo kịp bài trong lúc chờ sách chính thức.</p>
         <div class="hero-actions">
           <a class="button button-primary" href="#giai-phap">Khám phá cách làm <span class="arrow" aria-hidden="true">↓</span></a>
-          <a class="button button-quiet" href="#bat-dau">Kế hoạch triển khai</a>
+          <a class="button button-quiet" href="#so-muon-sach">Bảng điều khiển</a>
         </div>
       </div>
       <span class="hero-note">Sách giấy đã mua hợp pháp · Học liệu tự biên soạn</span>
@@ -400,6 +609,128 @@
       </div>
     </section>
 
+    <section class="demo-panel" id="so-muon-sach" aria-labelledby="demo-title">
+      <div class="wrap">
+        <div class="section-heading" style="margin-bottom: 22px;">
+          <div>
+            <p class="eyebrow">Prototype vận hành</p>
+            <h2 id="demo-title">Sổ mượn sách trực tuyến</h2>
+          </div>
+          <p>Đăng ký tài khoản, đăng sách cho mượn và quản lý yêu cầu mượn bằng dữ liệu trên trình duyệt.</p>
+        </div>
+
+        <div class="demo-card">
+          <div class="auth-box">
+            <h3>Đăng nhập / Tạo tài khoản</h3>
+            <div class="auth-tabs">
+              <button class="tab-button active" type="button" data-auth-tab="login">Đăng nhập</button>
+              <button class="tab-button" type="button" data-auth-tab="register">Đăng ký</button>
+            </div>
+
+            <form id="loginForm" class="auth-form" novalidate>
+              <label>Username
+                <input type="text" name="username" placeholder="vd: nguyenvana">
+              </label>
+              <label>Mật khẩu
+                <input type="password" name="password" placeholder="Nhập mật khẩu">
+              </label>
+              <button class="button button-primary" type="submit">Đăng nhập</button>
+            </form>
+
+            <form id="registerForm" class="auth-form" style="display:none;" novalidate>
+              <label>Họ và tên
+                <input type="text" name="name" placeholder="Nhập họ tên">
+              </label>
+              <label>Username
+                <input type="text" name="username" placeholder="vd: lanngoc">
+              </label>
+              <label>Mật khẩu
+                <input type="password" name="password" placeholder="Tạo mật khẩu">
+              </label>
+              <label>Vai trò
+                <select name="role">
+                  <option value="user">Người dùng</option>
+                  <option value="manager">Quản lý</option>
+                </select>
+              </label>
+              <button class="button button-success" type="submit">Tạo tài khoản</button>
+            </form>
+
+            <div id="authAlert" class="alert"></div>
+
+            <div id="loginState" class="login-state">
+              <p class="status-text">Chưa có tài khoản nào đăng nhập.</p>
+            </div>
+          </div>
+
+          <div class="book-box">
+            <div id="dashboard" class="dashboard">
+              <div id="managerPanel" style="display:none; width:100%;">
+                <h3>Quản lý kho sách</h3>
+                <form id="bookForm" class="book-form" novalidate>
+                  <div class="field-row">
+                    <label>Tên sách
+                      <input type="text" name="title" placeholder="Ví dụ: Toán 7">
+                    </label>
+                    <label>Tác giả
+                      <input type="text" name="author" placeholder="Ví dụ: Bộ Giáo dục">
+                    </label>
+                  </div>
+                  <div class="field-row">
+                    <label>Thể loại
+                      <input type="text" name="category" placeholder="Ví dụ: Toán học">
+                    </label>
+                    <label>Trạng thái
+                      <select name="status">
+                        <option value="available">Sẵn có</option>
+                        <option value="borrowed">Đang cho mượn</option>
+                      </select>
+                    </label>
+                  </div>
+                  <button class="button button-primary" type="submit">Đăng sách cho mượn</button>
+                </form>
+
+                <div class="requests-box" style="margin-top:20px;">
+                  <h3>Yêu cầu mượn</h3>
+                  <div id="requestListManager" class="request-list"></div>
+                </div>
+              </div>
+
+              <div id="userPanel" style="display:none; width:100%;">
+                <h3>Học sinh / Người dùng</h3>
+                <form id="requestForm" class="request-form" novalidate>
+                  <label>Chọn sách
+                    <select name="bookId" id="bookSelect"></select>
+                  </label>
+                  <div class="field-row">
+                    <label>Ngày mượn
+                      <input type="date" name="startDate">
+                    </label>
+                    <label>Ngày trả dự kiến
+                      <input type="date" name="endDate">
+                    </label>
+                  </div>
+                  <label>Ghi chú
+                    <textarea name="note" placeholder="Mô tả mục đích mượn sách hoặc lớp học..."></textarea>
+                  </label>
+                  <button class="button button-primary" type="submit">Gửi yêu cầu mượn</button>
+                </form>
+
+                <div class="requests-box" style="margin-top:20px;">
+                  <h3>Yêu cầu của tôi</h3>
+                  <div id="requestListUser" class="request-list"></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="guestState" class="login-state">
+              <p class="status-text">Bạn cần đăng nhập để xem hệ thống mượn sách.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="start" id="bat-dau" aria-labelledby="start-title">
       <div class="wrap">
         <div class="start-top">
@@ -430,9 +761,390 @@
     </div>
   </footer>
   <script>
-    document.querySelectorAll("[data-print]").forEach((button) => {
-      button.addEventListener("click", () => window.print());
+    const STORAGE_KEYS = {
+      users: 'clbai_users',
+      books: 'clbai_books',
+      requests: 'clbai_requests',
+      currentUser: 'clbai_currentUser'
+    };
+
+    const defaultUsers = [
+      { id: crypto.randomUUID(), name: 'Quản lý trường', username: 'manager', password: '123456', role: 'manager' },
+      { id: crypto.randomUUID(), name: 'Nguyễn Văn A', username: 'student01', password: '123456', role: 'user' }
+    ];
+
+    const defaultBooks = [
+      { id: crypto.randomUUID(), title: 'Toán 7', author: 'Bộ Giáo dục', category: 'Toán học', status: 'available', createdAt: new Date().toISOString() },
+      { id: crypto.randomUUID(), title: 'Ngữ văn 7', author: 'Bộ Giáo dục', category: 'Ngữ văn', status: 'available', createdAt: new Date().toISOString() },
+      { id: crypto.randomUUID(), title: 'Vật lý 8', author: 'Bộ Giáo dục', category: 'Khoa học', status: 'available', createdAt: new Date().toISOString() }
+    ];
+
+    const defaultRequests = [];
+
+    function safeParse(key, fallback) {
+      try {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function boot() {
+      if (!localStorage.getItem(STORAGE_KEYS.users)) {
+        localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(defaultUsers));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.books)) {
+        localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(defaultBooks));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.requests)) {
+        localStorage.setItem(STORAGE_KEYS.requests, JSON.stringify(defaultRequests));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.currentUser)) {
+        localStorage.setItem(STORAGE_KEYS.currentUser, JSON.stringify(null));
+      }
+      syncUI();
+    }
+
+    function getUsers() {
+      return safeParse(STORAGE_KEYS.users, []);
+    }
+
+    function getBooks() {
+      return safeParse(STORAGE_KEYS.books, []);
+    }
+
+    function getRequests() {
+      return safeParse(STORAGE_KEYS.requests, []);
+    }
+
+    function getCurrentUser() {
+      return safeParse(STORAGE_KEYS.currentUser, null);
+    }
+
+    function setCurrentUser(user) {
+      localStorage.setItem(STORAGE_KEYS.currentUser, JSON.stringify(user));
+    }
+
+    function showAlert(message, isError = false) {
+      const alertEl = document.getElementById('authAlert');
+      alertEl.textContent = message;
+      alertEl.classList.add('show');
+      if (isError) {
+        alertEl.classList.add('error');
+      } else {
+        alertEl.classList.remove('error');
+      }
+    }
+
+    function hideAlert() {
+      document.getElementById('authAlert').classList.remove('show');
+    }
+
+    function authTabs() {
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const tabButtons = document.querySelectorAll('[data-auth-tab]');
+      tabButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const mode = button.dataset.authTab;
+          tabButtons.forEach((item) => item.classList.toggle('active', item === button));
+          loginForm.style.display = mode === 'login' ? 'grid' : 'none';
+          registerForm.style.display = mode === 'register' ? 'grid' : 'none';
+          hideAlert();
+        });
+      });
+    }
+
+    function formatStatus(status) {
+      switch (status) {
+        case 'available': return 'Sẵn có';
+        case 'borrowed': return 'Đang cho mượn';
+        case 'pending': return 'Chờ duyệt';
+        case 'approved': return 'Đã duyệt';
+        case 'rejected': return 'Từ chối';
+        default: return status;
+      }
+    }
+
+    function buildRequestListForUser(userId) {
+      const requests = getRequests().filter((request) => request.userId === userId);
+      const list = document.getElementById('requestListUser');
+      list.innerHTML = '';
+      if (!requests.length) {
+        list.innerHTML = '<p class="status-text">Chưa có yêu cầu mượn nào.</p>';
+        return;
+      }
+      requests.forEach((request) => {
+        const book = getBooks().find((item) => item.id === request.bookId);
+        const item = document.createElement('div');
+        item.className = 'request-item';
+        item.innerHTML = `
+          <div class="request-meta">
+            <strong>${book ? book.title : 'Sách'} · ${request.userName}</strong>
+            <span>${request.startDate} → ${request.endDate}</span>
+            <span>${request.note || 'Không có ghi chú'}</span>
+          </div>
+          <span class="badge ${request.status}">${formatStatus(request.status)}</span>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function buildRequestListForManager() {
+      const requests = getRequests();
+      const list = document.getElementById('requestListManager');
+      list.innerHTML = '';
+      if (!requests.length) {
+        list.innerHTML = '<p class="status-text">Chưa có yêu cầu mượn nào.</p>';
+        return;
+      }
+      requests.forEach((request) => {
+        const item = document.createElement('div');
+        item.className = 'request-item';
+        const book = getBooks().find((entry) => entry.id === request.bookId);
+        item.innerHTML = `
+          <div class="request-meta">
+            <strong>${request.userName}</strong>
+            <span>Mượn: ${book ? book.title : 'Sách'} · ${request.startDate} → ${request.endDate}</span>
+            <span>${request.note || 'Không có ghi chú'}</span>
+          </div>
+          <div class="button-row" style="margin-top:0;">
+            <button class="small-button button-success" data-approve="${request.id}" type="button">Duyệt</button>
+            <button class="small-button button-danger" data-reject="${request.id}" type="button">Từ chối</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+
+      list.querySelectorAll('[data-approve]').forEach((button) => {
+        button.addEventListener('click', () => approveRequest(button.dataset.approve));
+      });
+      list.querySelectorAll('[data-reject]').forEach((button) => {
+        button.addEventListener('click', () => rejectRequest(button.dataset.reject));
+      });
+    }
+
+    function renderBooks() {
+      const books = getBooks();
+      const select = document.getElementById('bookSelect');
+      select.innerHTML = books
+        .filter((book) => book.status === 'available')
+        .map((book) => `<option value="${book.id}">${book.title} · ${book.category}</option>`)
+        .join('') || '<option value="">Không có sách sẵn có</option>';
+      if (!books.some((book) => book.status === 'available')) {
+        document.getElementById('requestForm').querySelector('button[type="submit"]').disabled = true;
+      } else {
+        document.getElementById('requestForm').querySelector('button[type="submit"]').disabled = false;
+      }
+    }
+
+    function renderDashboard() {
+      const currentUser = getCurrentUser();
+      const dashboard = document.getElementById('dashboard');
+      const guestState = document.getElementById('guestState');
+      const loginState = document.getElementById('loginState');
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+
+      if (!currentUser) {
+        dashboard.classList.remove('active');
+        guestState.style.display = 'block';
+        loginForm.style.display = 'grid';
+        registerForm.style.display = 'none';
+        loginState.innerHTML = '<p class="status-text">Chưa có tài khoản nào đăng nhập.</p>';
+        return;
+      }
+
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'none';
+      guestState.style.display = 'none';
+      loginState.innerHTML = `<div class="user-pill">👤 ${currentUser.name} · ${currentUser.role === 'manager' ? 'Quản lý' : 'Người dùng'}</div><button class="button button-secondary" type="button" id="logoutBtn">Đăng xuất</button>`;
+
+      const managerPanel = document.getElementById('managerPanel');
+      const userPanel = document.getElementById('userPanel');
+
+      if (currentUser.role === 'manager') {
+        managerPanel.style.display = 'block';
+        userPanel.style.display = 'none';
+      } else {
+        managerPanel.style.display = 'none';
+        userPanel.style.display = 'block';
+      }
+
+      dashboard.classList.add('active');
+      renderBooks();
+      buildRequestListForUser(currentUser.id);
+      buildRequestListForManager();
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        setCurrentUser(null);
+        syncUI();
+      });
+    }
+
+    function syncUI() {
+      renderDashboard();
+    }
+
+    function registerUser(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const data = Object.fromEntries(new FormData(form).entries());
+      const users = getUsers();
+      const exists = users.some((user) => user.username.toLowerCase() === String(data.username).trim().toLowerCase());
+      if (!data.name || !data.username || !data.password) {
+        showAlert('Vui lòng điền đầy đủ thông tin.', true);
+        return;
+      }
+      if (exists) {
+        showAlert('Username đã tồn tại. Vui lòng chọn tên khác.', true);
+        return;
+      }
+
+      const newUser = {
+        id: crypto.randomUUID(),
+        name: data.name.trim(),
+        username: data.username.trim(),
+        password: data.password,
+        role: data.role || 'user'
+      };
+
+      users.push(newUser);
+      localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
+      form.reset();
+      showAlert('Tạo tài khoản thành công. Bạn có thể đăng nhập ngay.', false);
+      setCurrentUser(newUser);
+      syncUI();
+    }
+
+    function loginUser(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const data = Object.fromEntries(new FormData(form).entries());
+      const users = getUsers();
+      const found = users.find((user) => user.username.toLowerCase() === String(data.username || '').trim().toLowerCase() && user.password === String(data.password || ''));
+      if (!found) {
+        showAlert('Thông tin đăng nhập không đúng.', true);
+        return;
+      }
+      setCurrentUser(found);
+      hideAlert();
+      syncUI();
+      form.reset();
+    }
+
+    function addBook(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const data = Object.fromEntries(new FormData(form).entries());
+      const books = getBooks();
+      if (!data.title || !data.author || !data.category) {
+        showAlert('Vui lòng nhập đầy đủ tên sách, tác giả và thể loại.', true);
+        return;
+      }
+      const newBook = {
+        id: crypto.randomUUID(),
+        title: data.title.trim(),
+        author: data.author.trim(),
+        category: data.category.trim(),
+        status: data.status || 'available',
+        createdAt: new Date().toISOString()
+      };
+      books.push(newBook);
+      localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(books));
+      form.reset();
+      renderBooks();
+      buildRequestListForManager();
+      showAlert('Đăng sách thành công.', false);
+    }
+
+    function submitRequest(event) {
+      event.preventDefault();
+      const currentUser = getCurrentUser();
+      if (!currentUser || currentUser.role !== 'user') {
+        showAlert('Chỉ người dùng mới được gửi yêu cầu mượn.', true);
+        return;
+      }
+      const form = event.currentTarget;
+      const data = Object.fromEntries(new FormData(form).entries());
+      if (!data.bookId || !data.startDate || !data.endDate) {
+        showAlert('Vui lòng chọn sách và chọn ngày mượn, ngày trả.', true);
+        return;
+      }
+      const books = getBooks();
+      const selectedBook = books.find((book) => book.id === data.bookId);
+      if (!selectedBook || selectedBook.status !== 'available') {
+        showAlert('Sách này hiện không còn sẵn, vui lòng chọn cuốn khác.', true);
+        return;
+      }
+
+      const requestData = {
+        id: crypto.randomUUID(),
+        userId: currentUser.id,
+        userName: currentUser.name,
+        bookId: selectedBook.id,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        note: data.note || '',
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      };
+
+      const requests = getRequests();
+      requests.push(requestData);
+      localStorage.setItem(STORAGE_KEYS.requests, JSON.stringify(requests));
+      form.reset();
+      renderBooks();
+      buildRequestListForUser(currentUser.id);
+      buildRequestListForManager();
+      showAlert('Yêu cầu mượn đã được gửi thành công. Quản lý sẽ duyệt trong thời gian sớm nhất.', false);
+    }
+
+    function approveRequest(requestId) {
+      const requests = getRequests();
+      const request = requests.find((item) => item.id === requestId);
+      if (!request) return;
+      request.status = 'approved';
+      const books = getBooks();
+      const targetBook = books.find((book) => book.id === request.bookId);
+      if (targetBook) {
+        targetBook.status = 'borrowed';
+      }
+      localStorage.setItem(STORAGE_KEYS.requests, JSON.stringify(requests));
+      localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(books));
+      buildRequestListForManager();
+      renderBooks();
+      const currentUser = getCurrentUser();
+      if (currentUser) {
+        buildRequestListForUser(currentUser.id);
+      }
+    }
+
+    function rejectRequest(requestId) {
+      const requests = getRequests();
+      const request = requests.find((item) => item.id === requestId);
+      if (!request) return;
+      request.status = 'rejected';
+      localStorage.setItem(STORAGE_KEYS.requests, JSON.stringify(requests));
+      buildRequestListForManager();
+      const currentUser = getCurrentUser();
+      if (currentUser) {
+        buildRequestListForUser(currentUser.id);
+      }
+    }
+
+    document.querySelectorAll('[data-print]').forEach((button) => {
+      button.addEventListener('click', () => window.print());
     });
+
+    document.getElementById('loginForm').addEventListener('submit', loginUser);
+    document.getElementById('registerForm').addEventListener('submit', registerUser);
+    document.getElementById('bookForm').addEventListener('submit', addBook);
+    document.getElementById('requestForm').addEventListener('submit', submitRequest);
+
+    authTabs();
+    boot();
   </script>
 </body>
 </html>
