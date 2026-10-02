@@ -342,10 +342,43 @@
       display: grid;
     }
 
-    .book-list, .request-list {
+    .book-list, .request-list, .catalog {
       display: grid;
       gap: 12px;
       margin-top: 10px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .stat-card {
+      padding: 16px 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #f4f7ef;
+    }
+
+    .stat-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .stat-value {
+      display: block;
+      margin-top: 7px;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+      font-family: var(--serif);
+      color: var(--ink);
     }
 
     .book-item, .request-item {
@@ -362,6 +395,22 @@
     .book-meta, .request-meta {
       display: grid;
       gap: 4px;
+    }
+
+    .search-box {
+      margin-bottom: 8px;
+    }
+
+    .search-box input {
+      min-height: 42px;
+    }
+
+    .empty-state {
+      padding: 14px;
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      color: var(--ink-soft);
+      background: #f8faf6;
     }
 
     .badge {
@@ -690,6 +739,32 @@
                   <button class="button button-primary" type="submit">Đăng sách cho mượn</button>
                 </form>
 
+                <div class="stats-grid" aria-label="Thống kê kho sách">
+                  <div class="stat-card">
+                    <span class="stat-label">Tổng sách</span>
+                    <span class="stat-value" id="statTotal">0</span>
+                  </div>
+                  <div class="stat-card">
+                    <span class="stat-label">Sẵn có</span>
+                    <span class="stat-value" id="statAvailable">0</span>
+                  </div>
+                  <div class="stat-card">
+                    <span class="stat-label">Đang mượn</span>
+                    <span class="stat-value" id="statBorrowed">0</span>
+                  </div>
+                  <div class="stat-card">
+                    <span class="stat-label">Yêu cầu chờ</span>
+                    <span class="stat-value" id="statPending">0</span>
+                  </div>
+                </div>
+
+                <div class="search-box">
+                  <label>Tìm kiếm sách
+                    <input id="bookSearch" type="text" placeholder="Nhập tên hoặc thể loại sách...">
+                  </label>
+                </div>
+                <div id="bookCatalog" class="catalog"></div>
+
                 <div class="requests-box" style="margin-top:20px;">
                   <h3>Yêu cầu mượn</h3>
                   <div id="requestListManager" class="request-list"></div>
@@ -719,6 +794,11 @@
                 <div class="requests-box" style="margin-top:20px;">
                   <h3>Yêu cầu của tôi</h3>
                   <div id="requestListUser" class="request-list"></div>
+                </div>
+
+                <div class="requests-box" style="margin-top:20px;">
+                  <h3>Lịch sử mượn</h3>
+                  <div id="historyListUser" class="request-list"></div>
                 </div>
               </div>
             </div>
@@ -863,8 +943,18 @@
         case 'pending': return 'Chờ duyệt';
         case 'approved': return 'Đã duyệt';
         case 'rejected': return 'Từ chối';
+        case 'returned': return 'Đã trả';
         default: return status;
       }
+    }
+
+    function renderStats() {
+      const books = getBooks();
+      const requests = getRequests();
+      document.getElementById('statTotal').textContent = books.length;
+      document.getElementById('statAvailable').textContent = books.filter((book) => book.status === 'available').length;
+      document.getElementById('statBorrowed').textContent = books.filter((book) => book.status === 'borrowed').length;
+      document.getElementById('statPending').textContent = requests.filter((request) => request.status === 'pending').length;
     }
 
     function buildRequestListForUser(userId) {
@@ -873,21 +963,43 @@
       list.innerHTML = '';
       if (!requests.length) {
         list.innerHTML = '<p class="status-text">Chưa có yêu cầu mượn nào.</p>';
+      } else {
+        requests.forEach((request) => {
+          const book = getBooks().find((item) => item.id === request.bookId);
+          const item = document.createElement('div');
+          item.className = 'request-item';
+          item.innerHTML = `
+            <div class="request-meta">
+              <strong>${book ? book.title : 'Sách'} · ${request.userName}</strong>
+              <span>${request.startDate} → ${request.endDate}</span>
+              <span>${request.note || 'Không có ghi chú'}</span>
+            </div>
+            <span class="badge ${request.status}">${formatStatus(request.status)}</span>
+          `;
+          list.appendChild(item);
+        });
+      }
+
+      const historyList = document.getElementById('historyListUser');
+      historyList.innerHTML = '';
+      const history = requests.filter((request) => ['approved', 'returned', 'rejected'].includes(request.status));
+      if (!history.length) {
+        historyList.innerHTML = '<p class="status-text">Chưa có lịch sử mượn.</p>';
         return;
       }
-      requests.forEach((request) => {
+      history.forEach((request) => {
         const book = getBooks().find((item) => item.id === request.bookId);
         const item = document.createElement('div');
         item.className = 'request-item';
         item.innerHTML = `
           <div class="request-meta">
-            <strong>${book ? book.title : 'Sách'} · ${request.userName}</strong>
+            <strong>${book ? book.title : 'Sách'}</strong>
             <span>${request.startDate} → ${request.endDate}</span>
-            <span>${request.note || 'Không có ghi chú'}</span>
+            <span>${request.status === 'approved' ? 'Đã được quản lý duyệt' : request.status === 'returned' ? 'Đã trả sách' : 'Đã từ chối yêu cầu'}</span>
           </div>
           <span class="badge ${request.status}">${formatStatus(request.status)}</span>
         `;
-        list.appendChild(item);
+        historyList.appendChild(item);
       });
     }
 
@@ -925,6 +1037,37 @@
       });
     }
 
+    function renderBookCatalog() {
+      const catalog = document.getElementById('bookCatalog');
+      const term = document.getElementById('bookSearch').value.trim().toLowerCase();
+      const books = getBooks().filter((book) => !term || book.title.toLowerCase().includes(term) || book.category.toLowerCase().includes(term));
+      catalog.innerHTML = '';
+      if (!books.length) {
+        catalog.innerHTML = '<div class="empty-state">Không tìm thấy sách nào phù hợp.</div>';
+        return;
+      }
+      books.forEach((book) => {
+        const item = document.createElement('div');
+        item.className = 'book-item';
+        item.innerHTML = `
+          <div class="book-meta">
+            <strong>${book.title}</strong>
+            <span>${book.author} · ${book.category}</span>
+            <span>Trạng thái: ${formatStatus(book.status)}</span>
+          </div>
+          <div class="button-row" style="margin-top:0;">
+            <span class="badge ${book.status}">${formatStatus(book.status)}</span>
+            ${book.status === 'borrowed' ? '<button class="small-button button-secondary" data-return-book="' + book.id + '" type="button">Trả sách</button>' : ''}
+          </div>
+        `;
+        catalog.appendChild(item);
+      });
+
+      catalog.querySelectorAll('[data-return-book]').forEach((button) => {
+        button.addEventListener('click', () => returnBook(button.dataset.returnBook));
+      });
+    }
+
     function renderBooks() {
       const books = getBooks();
       const select = document.getElementById('bookSelect');
@@ -937,6 +1080,8 @@
       } else {
         document.getElementById('requestForm').querySelector('button[type="submit"]').disabled = false;
       }
+      renderBookCatalog();
+      renderStats();
     }
 
     function renderDashboard() {
@@ -1134,6 +1279,30 @@
       }
     }
 
+    function returnBook(bookId) {
+      const books = getBooks();
+      const targetBook = books.find((book) => book.id === bookId);
+      if (!targetBook) return;
+      targetBook.status = 'available';
+      localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(books));
+
+      const requests = getRequests();
+      const activeRequest = requests
+        .filter((request) => request.bookId === bookId && request.status === 'approved')
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+      if (activeRequest) {
+        activeRequest.status = 'returned';
+        localStorage.setItem(STORAGE_KEYS.requests, JSON.stringify(requests));
+      }
+
+      renderBooks();
+      const currentUser = getCurrentUser();
+      if (currentUser) {
+        buildRequestListForUser(currentUser.id);
+      }
+      buildRequestListForManager();
+    }
+
     document.querySelectorAll('[data-print]').forEach((button) => {
       button.addEventListener('click', () => window.print());
     });
@@ -1142,6 +1311,7 @@
     document.getElementById('registerForm').addEventListener('submit', registerUser);
     document.getElementById('bookForm').addEventListener('submit', addBook);
     document.getElementById('requestForm').addEventListener('submit', submitRequest);
+    document.getElementById('bookSearch').addEventListener('input', renderBookCatalog);
 
     authTabs();
     boot();
